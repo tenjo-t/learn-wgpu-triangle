@@ -1,3 +1,4 @@
+use wgpu::util::DeviceExt;
 use winit::{
     event::*,
     event_loop::{ControlFlow, EventLoop},
@@ -98,6 +99,17 @@ fn main() {
             surface.configure(&device, &config)
         }
     };
+
+    let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        label: Some("Vertex Buffer"),
+        contents: bytemuck::cast_slice(VERTICES),
+        usage: wgpu::BufferUsages::VERTEX,
+    });
+
+    let shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        label: Some("Shader"),
+        source: wgpu::ShaderSource::Wgsl(include_str!("shader.wgsl").into()),
+    });
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
