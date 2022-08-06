@@ -11,6 +11,16 @@ fn main() {
     let size = window.inner_size();
     let instance = wgpu::Instance::new(wgpu::Backends::all());
     let surface = unsafe { instance.create_surface(&window) };
+    let adapter = pollster::block_on(async {
+        instance
+            .request_adapter(&wgpu::RequestAdapterOptions {
+                power_preference: wgpu::PowerPreference::default(),
+                compatible_surface: Some(&surface),
+                force_fallback_adapter: false,
+            })
+            .await
+            .unwrap()
+    });
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
