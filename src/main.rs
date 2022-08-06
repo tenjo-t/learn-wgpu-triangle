@@ -46,6 +46,17 @@ fn main() {
     };
     surface.configure(&device, &config);
 
+    let resize = |device: &wgpu::Device,
+                  surface: &wgpu::Surface,
+                  config: &mut wgpu::SurfaceConfiguration,
+                  new_size: winit::dpi::PhysicalSize<u32>| {
+        if new_size.width > 0 && new_size.height > 0 {
+            config.width = new_size.width;
+            config.height = new_size.height;
+            surface.configure(&device, &config)
+        }
+    };
+
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
             window_id,
@@ -61,6 +72,12 @@ fn main() {
                     },
                 ..
             } => *control_flow = ControlFlow::Exit,
+            WindowEvent::Resized(physical_size) => {
+                resize(&device, &surface, &mut config, *physical_size);
+            }
+            WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                resize(&device, &surface, &mut config, **new_inner_size);
+            }
             _ => {}
         },
         _ => {}
