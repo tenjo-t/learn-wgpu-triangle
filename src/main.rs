@@ -10,6 +10,7 @@ fn main() {
     let window = WindowBuilder::new().build(&event_loop).unwrap();
     let size = window.inner_size();
     let instance = wgpu::Instance::new(wgpu::Backends::all());
+    let surface = unsafe { instance.create_surface(&window) };
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
