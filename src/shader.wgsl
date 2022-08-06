@@ -4,7 +4,7 @@ struct VertexInput {
 };
 
 struct VertexOutput {
-  @buildin(position) clip_position: vec4<f32>,
+  @builtin(position) clip_position: vec4<f32>,
   @location(0) color: vec3<f32>,
 }
 
