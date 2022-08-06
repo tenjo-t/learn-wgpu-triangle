@@ -11,6 +11,7 @@ fn main() {
     let size = window.inner_size();
     let instance = wgpu::Instance::new(wgpu::Backends::all());
     let surface = unsafe { instance.create_surface(&window) };
+
     let adapter = pollster::block_on(async {
         instance
             .request_adapter(&wgpu::RequestAdapterOptions {
@@ -21,6 +22,7 @@ fn main() {
             .await
             .unwrap()
     });
+
     let (device, queue) = pollster::block_on(async {
         adapter
             .request_device(
@@ -34,6 +36,15 @@ fn main() {
             .await
             .unwrap()
     });
+
+    let mut config = wgpu::SurfaceConfiguration {
+        usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+        format: surface.get_supported_formats(&adapter)[0],
+        width: size.width,
+        height: size.height,
+        present_mode: wgpu::PresentMode::Fifo,
+    };
+    surface.configure(&device, &config);
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
