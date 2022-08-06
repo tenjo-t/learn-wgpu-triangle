@@ -21,6 +21,19 @@ fn main() {
             .await
             .unwrap()
     });
+    let (device, queue) = pollster::block_on(async {
+        adapter
+            .request_device(
+                &wgpu::DeviceDescriptor {
+                    features: wgpu::Features::empty(),
+                    limits: wgpu::Limits::default(),
+                    label: None,
+                },
+                None,
+            )
+            .await
+            .unwrap()
+    });
 
     event_loop.run(move |event, _, control_flow| match event {
         Event::WindowEvent {
